@@ -1,7 +1,8 @@
 // ==UserScript==
 // @name         hpc_jobs
-// @version      0.0.2
-// @match        http://219.217.238.193/jobs/
+// @version      0.0.3
+// @include      http://219.217.238.193/jobs/
+// @include      http://h/jobs/
 // @description  self mode
 // @run-at       document-start
 // @namespace    https://greasyfork.org/users/164996
@@ -61,10 +62,11 @@ const parse = s => {
 const main = async () => {
   let a
   try {
-    a = await fetch('http://219.217.238.193/jobs/')
+    a = await fetch(window.location.href)
     a = await a.text()
   } catch (error) {
     disconnect.style.display = 'block'
+    return
   }
   disconnect.style.display = 'none'
   a = parse(a)
