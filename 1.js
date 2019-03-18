@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         hpc_jobs
-// @version      0.0.1
+// @version      0.0.2
 // @match        http://219.217.238.193/jobs/
 // @description  self mode
 // @run-at       document-start
@@ -30,10 +30,18 @@ document.write(`<!DOCTYPE html>
       .other {
         color: #bbb;
       }
+      #disconnect{
+        display: none;
+        color: #bbb;
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%);
+      }
     </style>
   </head>
   <body>
     <div id="app">
+      <div id='disconnect'>disconnect</div>
       <pre id="node"></pre>
       <div id="table"></div>
     </div>
@@ -44,14 +52,21 @@ const usr = 'bilabila'
 const app = document.querySelector('#app')
 const node = document.querySelector('#node')
 const table = document.querySelector('#table')
+const disconnect = document.querySelector('#disconnect')
 const parse = s => {
   const t = document.implementation.createHTMLDocument()
   t.body.innerHTML = s
   return t
 }
 const main = async () => {
-  let a = await fetch('http://219.217.238.193/jobs/')
-  a = await a.text()
+  let a
+  try {
+    a = await fetch('http://219.217.238.193/jobs/')
+    a = await a.text()
+  } catch (error) {
+    disconnect.style.display = 'block'
+  }
+  disconnect.style.display = 'none'
   a = parse(a)
   let b = [...a.querySelectorAll('tr')].map(i => [...i.children].map(j => j.textContent.trim()))
   let c = b.reduceRight(

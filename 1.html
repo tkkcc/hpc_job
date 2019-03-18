@@ -17,13 +17,22 @@
       .other {
         color: #bbb;
       }
+      #disconnect{
+        color: #bbb;
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%);
+      }
     </style>
   </head>
   <body>
     <div id="app">
-      <pre id="node"></pre>
-      <div id="table"></div>
+      <div id='disconnect'>disconnect</div>
+      <pre id="node">dd</pre>
+      <div id="table">ddddd</div>
     </div>
-
+    <script>
+      document.getElementById('disconnect').style.display='block';
+    </script>
   </body>
 </html>
