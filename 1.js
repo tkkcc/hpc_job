@@ -55,7 +55,7 @@ const parse = s => {
 const main = async () => {
   let a
   try {
-    a = await fetch(window.location.href)
+    a = await fetch(window.location.href+'s')
     a = await a.text()
   } catch (error) {
     disconnect.style.display = 'block'
