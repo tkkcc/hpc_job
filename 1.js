@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         hpc_job
-// @version      0.0.4
+// @version      0.0.5
 // @include      http://219.217.238.193/job
 // @include      http://h/job
 // @description  self mode
