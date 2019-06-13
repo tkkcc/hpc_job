@@ -1,8 +1,9 @@
 // ==UserScript==
 // @name         hpc_job
-// @version      0.0.5
+// @version      0.0.6
 // @include      http://219.217.238.193/job
 // @include      http://h/job
+// @include      http://hh/job
 // @description  self mode
 // @run-at       document-start
 // @namespace    https://greasyfork.org/users/164996
@@ -42,6 +43,7 @@ const body = `<div id="app">
 </div>`
 document.head.innerHTML = head
 document.body.innerHTML = body
+const timeout = 5000
 const usr = 'bilabila'
 const app = document.querySelector('#app')
 const node = document.querySelector('#node')
@@ -52,10 +54,18 @@ const parse = s => {
   t.body.innerHTML = s
   return t
 }
+const fetchWithTimeout = (url, options) => {
+  return Promise.race([
+    fetch(url, options),
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('timeout')), timeout)
+    )
+  ])
+}
 const main = async () => {
   let a
   try {
-    a = await fetch(window.location.href+'s')
+    a = await fetchWithTimeout(window.location.href + 's')
     a = await a.text()
   } catch (error) {
     disconnect.style.display = 'block'
@@ -63,7 +73,9 @@ const main = async () => {
   }
   disconnect.style.display = 'none'
   a = parse(a)
-  let b = [...a.querySelectorAll('tr')].map(i => [...i.children].map(j => j.textContent.trim()))
+  let b = [...a.querySelectorAll('tr')].map(i =>
+    [...i.children].map(j => j.textContent.trim())
+  )
   let c = b.reduceRight(
     (a, c) =>
       c[1] === usr
@@ -78,5 +90,21 @@ const main = async () => {
     table.innerHTML = c
   })
 }
+
 main()
-setInterval(main, 5000)
+let timer = setInterval(main, timeout)
+let changeTimer
+
+document.addEventListener(
+  'visibilitychange',
+  () => {
+    clearTimeout(changeTimer)
+    if (document.hidden) {
+      changeTimer = setTimeout(() => clearInterval(timer), timeout)
+    } else {
+      main()
+      clearInterval(timer)
+      timer = setInterval(main, timeout)
+    }
+  },
+)
